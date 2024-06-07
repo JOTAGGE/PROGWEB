@@ -1,42 +1,62 @@
-/* styles.css */
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    background-color: #f4f4f9;
+    background-color: #f5f5f5;
 }
 
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 1em;
-    text-align: center;
+nav {
+    background-color: #333;
+    padding: 10px 0;
 }
 
-main {
-    padding: 1em;
-    max-width: 800px;
+.navbar {
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
 }
 
-section {
-    margin-bottom: 2em;
+.navbar-title {
+    color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
 }
 
-h2 {
-    color: #4CAF50;
+#overview-content {
+    padding: 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#overview-content, #water-content, #energy-content, #sewage-content, #location-content {
-    background-color: white;
-    padding: 1em;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+canvas {
+    display: block;
+    margin: 20px auto;
+    max-width: 600px;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .loading {
-    text-align: center;
-    color: #999;
+    font-size: 1.2em;
+    color: #888888;
+}
+
+p {
+    margin: 10px 0;
+}
+
+#overview-content p {
+    font-size: 1.2em;
+    color: #333333;
+}
+
+.chart-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
 }

@@ -17,10 +17,6 @@ async function fetchData() {
 // Função para atualizar o conteúdo do dashboard
 async function updateDashboard() {
     document.getElementById('overview-content').innerHTML = '<p class="loading">Carregando...</p>';
-    document.getElementById('water-content').innerHTML = '<p class="loading">Carregando...</p>';
-    document.getElementById('energy-content').innerHTML = '<p class="loading">Carregando...</p>';
-    document.getElementById('sewage-content').innerHTML = '<p class="loading">Carregando...</p>';
-    document.getElementById('location-content').innerHTML = '<p class="loading">Carregando...</p>';
 
     const data = await fetchData();
 
@@ -36,34 +32,78 @@ async function updateDashboard() {
         <p>Endereço: ${school.get("DS_ENDERECO")}, ${school.get("NO_BAIRRO")}, ${school.get("NO_MUNICIPIO")}, ${school.get("CO_UF")}</p>
     `;
 
-    document.getElementById('water-content').innerHTML = `
-        <p>Água Potável: ${school.get("IN_AGUA_POTAVEL") ? 'Sim' : 'Não'}</p>
-        <p>Água Rede Pública: ${school.get("IN_AGUA_REDE_PUBLICA") ? 'Sim' : 'Não'}</p>
-        <p>Água Poço Artesiano: ${school.get("IN_AGUA_POCO_ARTESIANO") ? 'Sim' : 'Não'}</p>
-        <p>Água Inexistente: ${school.get("IN_AGUA_INEXISTENTE") ? 'Sim' : 'Não'}</p>
-        <p>Água Cacimba: ${school.get("IN_AGUA_CACIMBA") ? 'Sim' : 'Não'}</p>
-        <p>Água Fonte/Rio: ${school.get("IN_AGUA_FONTE_RIO") ? 'Sim' : 'Não'}</p>
-    `;
+    // Dados para gráficos
+    const waterData = {
+        labels: ['Água Potável', 'Água Rede Pública', 'Água Poço Artesiano', 'Água Inexistente', 'Água Cacimba', 'Água Fonte/Rio'],
+        data: [
+            school.get("IN_AGUA_POTAVEL") ? 1 : 0,
+            school.get("IN_AGUA_REDE_PUBLICA") ? 1 : 0,
+            school.get("IN_AGUA_POCO_ARTESIANO") ? 1 : 0,
+            school.get("IN_AGUA_INEXISTENTE") ? 1 : 0,
+            school.get("IN_AGUA_CACIMBA") ? 1 : 0,
+            school.get("IN_AGUA_FONTE_RIO") ? 1 : 0
+        ]
+    };
 
-    document.getElementById('energy-content').innerHTML = `
-        <p>Energia Rede Pública: ${school.get("IN_ENERGIA_REDE_PUBLICA") ? 'Sim' : 'Não'}</p>
-        <p>Energia Gerador Fóssil: ${school.get("IN_ENERGIA_GERADOR_FOSSIL") ? 'Sim' : 'Não'}</p>
-        <p>Energia Renovável: ${school.get("IN_ENERGIA_RENOVAVEL") ? 'Sim' : 'Não'}</p>
-        <p>Energia Inexistente: ${school.get("IN_ENERGIA_INEXISTENTE") ? 'Sim' : 'Não'}</p>
-    `;
+    const energyData = {
+        labels: ['Energia Rede Pública', 'Energia Gerador Fóssil', 'Energia Renovável', 'Energia Inexistente'],
+        data: [
+            school.get("IN_ENERGIA_REDE_PUBLICA") ? 1 : 0,
+            school.get("IN_ENERGIA_GERADOR_FOSSIL") ? 1 : 0,
+            school.get("IN_ENERGIA_RENOVAVEL") ? 1 : 0,
+            school.get("IN_ENERGIA_INEXISTENTE") ? 1 : 0
+        ]
+    };
 
-    document.getElementById('sewage-content').innerHTML = `
-        <p>Esgoto Rede Pública: ${school.get("IN_ESGOTO_REDE_PUBLICA") ? 'Sim' : 'Não'}</p>
-        <p>Esgoto Fossa Séptica: ${school.get("IN_ESGOTO_FOSSA_SEPTICA") ? 'Sim' : 'Não'}</p>
-        <p>Esgoto Inexistente: ${school.get("IN_ESGOTO_INEXISTENTE") ? 'Sim' : 'Não'}</p>
-        <p>Esgoto Fossa Comum: ${school.get("IN_ESGOTO_FOSSA_COMUM") ? 'Sim' : 'Não'}</p>
-    `;
+    const sewageData = {
+        labels: ['Esgoto Rede Pública', 'Esgoto Fossa Séptica', 'Esgoto Inexistente', 'Esgoto Fossa Comum'],
+        data: [
+            school.get("IN_ESGOTO_REDE_PUBLICA") ? 1 : 0,
+            school.get("IN_ESGOTO_FOSSA_SEPTICA") ? 1 : 0,
+            school.get("IN_ESGOTO_INEXISTENTE") ? 1 : 0,
+            school.get("IN_ESGOTO_FOSSA_COMUM") ? 1 : 0
+        ]
+    };
 
-    document.getElementById('location-content').innerHTML = `
-        <p>Prédio Compartilhado: ${school.get("IN_PREDIO_COMPARTILHADO") ? 'Sim' : 'Não'}</p>
-        <p>Local Funcionamento Galpão: ${school.get("IN_LOCAL_FUNC_GALPAO") ? 'Sim' : 'Não'}</p>
-        <p>Local Funcionamento Outros: ${school.get("IN_LOCAL_FUNC_OUTROS") ? 'Sim' : 'Não'}</p>
-    `;
+    const locationData = {
+        labels: ['Prédio Compartilhado', 'Local Funcionamento Galpão', 'Local Funcionamento Outros'],
+        data: [
+            school.get("IN_PREDIO_COMPARTILHADO") ? 1 : 0,
+            school.get("IN_LOCAL_FUNC_GALPAO") ? 1 : 0,
+            school.get("IN_LOCAL_FUNC_OUTROS") ? 1 : 0
+        ]
+    };
+
+    // Criar gráficos
+    createChart('water-chart', 'Distribuição de Água', waterData);
+    createChart('energy-chart', 'Distribuição de Energia', energyData);
+    createChart('sewage-chart', 'Distribuição de Esgoto', sewageData);
+    createChart('location-chart', 'Localização', locationData);
+}
+
+// Função para criar gráficos
+function createChart(canvasId, title, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: title,
+                data: data.data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 // Atualizar dashboard ao carregar a página
