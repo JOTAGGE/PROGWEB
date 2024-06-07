@@ -6,6 +6,7 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/2.19.0/parse.min.js"></script>
+    <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js" defer></script>
 </head>
@@ -16,22 +17,21 @@
         </div>
     </nav>
     <h1>Geral</h1>
-    <div id="overview-content"></div>
-    
+    <div id="overview-content"> </div>
     <div class="chart-container">
         <h1>Agua</h1>
         <canvas id="water-chart"></canvas>
     </div>
     <div class="chart-container">
-        <h1>energia</h1>
+        <h1>Energia</h1>
         <canvas id="energy-chart"></canvas>
     </div>
     <div class="chart-container">
-        <h1>lixo</h1>
+        <h1>Lixo</h1>
         <canvas id="sewage-chart"></canvas>
     </div>
     <div class="chart-container">
-        <h1>localização</h1>
+        <h1>Local</h1>
         <canvas id="location-chart"></canvas>
     </div>
 </body>

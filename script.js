@@ -1,5 +1,5 @@
 // Configurar Parse
-Parse.initialize("n8qfuZ16LUPk0EKeepJlfnHi8T1mMpowk9CztGr0", "38BxP1BBw78TYG6g0eqJMRewr4OBLvbxn91jXSy2");
+Parse.initialize("YOUR_APP_ID", "YOUR_JS_KEY");
 Parse.serverURL = "https://parseapi.back4app.com/classes/nordeste1";
 
 // Função para buscar dados do Parse
@@ -14,7 +14,7 @@ async function fetchData() {
     }
 }
 
-// Função para atualizar o conteúdo do dashboard
+// Função para atualizar o conteúdo do dashboard e gerar gráficos
 async function updateDashboard() {
     document.getElementById('overview-content').innerHTML = '<p class="loading">Carregando...</p>';
 
@@ -32,77 +32,86 @@ async function updateDashboard() {
         <p>Endereço: ${school.get("DS_ENDERECO")}, ${school.get("NO_BAIRRO")}, ${school.get("NO_MUNICIPIO")}, ${school.get("CO_UF")}</p>
     `;
 
-    // Dados para gráficos
+    // Dados para o gráfico de Água
     const waterData = {
         labels: ['Água Potável', 'Água Rede Pública', 'Água Poço Artesiano', 'Água Inexistente', 'Água Cacimba', 'Água Fonte/Rio'],
-        data: [
-            school.get("IN_AGUA_POTAVEL") ? 1 : 0,
-            school.get("IN_AGUA_REDE_PUBLICA") ? 1 : 0,
-            school.get("IN_AGUA_POCO_ARTESIANO") ? 1 : 0,
-            school.get("IN_AGUA_INEXISTENTE") ? 1 : 0,
-            school.get("IN_AGUA_CACIMBA") ? 1 : 0,
-            school.get("IN_AGUA_FONTE_RIO") ? 1 : 0
-        ]
+        datasets: [{
+            label: 'Água',
+            data: [
+                school.get("IN_AGUA_POTAVEL"),
+                school.get("IN_AGUA_REDE_PUBLICA"),
+                school.get("IN_AGUA_POCO_ARTESIANO"),
+                school.get("IN_AGUA_INEXISTENTE"),
+                school.get("IN_AGUA_CACIMBA"),
+                school.get("IN_AGUA_FONTE_RIO")
+            ],
+            backgroundColor: ['#4caf50', '#2196f3', '#ffeb3b', '#f44336', '#ff9800', '#9c27b0']
+        }]
     };
 
+    // Dados para o gráfico de Energia
     const energyData = {
         labels: ['Energia Rede Pública', 'Energia Gerador Fóssil', 'Energia Renovável', 'Energia Inexistente'],
-        data: [
-            school.get("IN_ENERGIA_REDE_PUBLICA") ? 1 : 0,
-            school.get("IN_ENERGIA_GERADOR_FOSSIL") ? 1 : 0,
-            school.get("IN_ENERGIA_RENOVAVEL") ? 1 : 0,
-            school.get("IN_ENERGIA_INEXISTENTE") ? 1 : 0
-        ]
+        datasets: [{
+            label: 'Energia',
+            data: [
+                school.get("IN_ENERGIA_REDE_PUBLICA"),
+                school.get("IN_ENERGIA_GERADOR_FOSSIL"),
+                school.get("IN_ENERGIA_RENOVAVEL"),
+                school.get("IN_ENERGIA_INEXISTENTE")
+            ],
+            backgroundColor: ['#4caf50', '#2196f3', '#ffeb3b', '#f44336']
+        }]
     };
 
+    // Dados para o gráfico de Esgoto
     const sewageData = {
         labels: ['Esgoto Rede Pública', 'Esgoto Fossa Séptica', 'Esgoto Inexistente', 'Esgoto Fossa Comum'],
-        data: [
-            school.get("IN_ESGOTO_REDE_PUBLICA") ? 1 : 0,
-            school.get("IN_ESGOTO_FOSSA_SEPTICA") ? 1 : 0,
-            school.get("IN_ESGOTO_INEXISTENTE") ? 1 : 0,
-            school.get("IN_ESGOTO_FOSSA_COMUM") ? 1 : 0
-        ]
+        datasets: [{
+            label: 'Esgoto',
+            data: [
+                school.get("IN_ESGOTO_REDE_PUBLICA"),
+                school.get("IN_ESGOTO_FOSSA_SEPTICA"),
+                school.get("IN_ESGOTO_INEXISTENTE"),
+                school.get("IN_ESGOTO_FOSSA_COMUM")
+            ],
+            backgroundColor: ['#4caf50', '#2196f3', '#ffeb3b', '#f44336']
+        }]
     };
 
+    // Dados para o gráfico de Local de Funcionamento
     const locationData = {
         labels: ['Prédio Compartilhado', 'Local Funcionamento Galpão', 'Local Funcionamento Outros'],
-        data: [
-            school.get("IN_PREDIO_COMPARTILHADO") ? 1 : 0,
-            school.get("IN_LOCAL_FUNC_GALPAO") ? 1 : 0,
-            school.get("IN_LOCAL_FUNC_OUTROS") ? 1 : 0
-        ]
+        datasets: [{
+            label: 'Local de Funcionamento',
+            data: [
+                school.get("IN_PREDIO_COMPARTILHADO"),
+                school.get("IN_LOCAL_FUNC_GALPAO"),
+                school.get("IN_LOCAL_FUNC_OUTROS")
+            ],
+            backgroundColor: ['#4caf50', '#2196f3', '#ffeb3b']
+        }]
     };
 
     // Criar gráficos
-    createChart('water-chart', 'Distribuição de Água', waterData);
-    createChart('energy-chart', 'Distribuição de Energia', energyData);
-    createChart('sewage-chart', 'Distribuição de Esgoto', sewageData);
-    createChart('location-chart', 'Localização', locationData);
-}
-
-// Função para criar gráficos
-function createChart(canvasId, title, data) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    new Chart(ctx, {
+    new Chart(document.getElementById('water-chart'), {
         type: 'bar',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: title,
-                data: data.data,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        data: waterData
+    });
+
+    new Chart(document.getElementById('energy-chart'), {
+        type: 'bar',
+        data: energyData
+    });
+
+    new Chart(document.getElementById('sewage-chart'), {
+        type: 'bar',
+        data: sewageData
+    });
+
+    new Chart(document.getElementById('location-chart'), {
+        type: 'bar',
+        data: locationData
     });
 }
 
